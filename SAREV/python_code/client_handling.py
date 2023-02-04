@@ -48,9 +48,10 @@ def client_handler(serverSocket,clientConnection,clientAddress,actuators,driveOb
 
                 '''
                     jsonData : json object with all data sent by client.
-                    actuators : actuators : dictionary holds actuators pins for command.
+                    actuators : dictionary holds actuators pins for command.
                 '''
                 commandStatus = ActuatorsCmd.relay_command(jsonData,actuators)
+                # set system_status data for records.
                 jsonData["system_status"] = {
                     "extr_temp" : actuators["extr_temp"].value ,
                     "extr_hum" : actuators["extr_hum"].value ,
@@ -59,14 +60,16 @@ def client_handler(serverSocket,clientConnection,clientAddress,actuators,driveOb
                     "commandStatusText" : commandStatus[1],
                     }
 
+                # create system_status json file and upload it to google drive.
                 fileName = "node_data_"+str(datetime.now())+".json"
-                fileObj = saving.Saving("./data/"+fileName)
-                if fileObj.create_file():
-                    if fileObj.add_data(jsonData):
-                        fileObj.close_file()
-                        if driveAuthStatus: # check authentication status
-                            if driveObj.set_data("./data/"+fileName,fileName): # create the file for google drive
-                                driveObj.upload_file() # upload file to google drive
+                fileObj = saving.Saving("./data/"+fileName) # file name should be ended with extension , .txt , .csv , .js or .sjon.
+                if fileObj:
+                    if fileObj.create_file():
+                        if fileObj.add_data(jsonData):
+                            fileObj.close_file()
+                            if driveAuthStatus: # check authentication status
+                                if driveObj.set_data("./data/"+fileName,fileName): # create the file for google drive
+                                    driveObj.upload_file() # upload file to google drive
 
             except Exception as err:
                 print(CRED+"Error :: error with creating data in json file : {}".format(str(err))+CEND)

@@ -5,8 +5,13 @@ import json
 class Saving:
     def __init__(self,fileName,separateFiles = False):
         self.fileName = fileName # created file name to store the data
-        self.fileFormat = self.fileName.split(".")[-1].lower()
-        self.separateFiles = separateFiles # sotre data in separate files or not (humidty data , temperature data ...ect) , False by default
+        try:
+            self.fileFormat = self.fileName.split(".")[-1].lower()
+        except:
+            print(CRED+"Error :: file format not exist ( .txt , .csv , .json , .js )".format(str(err))+CEND)
+            return None
+            
+        self.separateFiles = separateFiles # store data in separate files or not (humidty data , temperature data ...ect) , False by default
         self.__csvWriter = None
         self.__dataFile = None
 
@@ -38,6 +43,7 @@ class Saving:
 
     def add_data(self,data):
 
+        # data parameter should be list type in case of .csv file , string in case of text file , and dictionary in case of json file.
         if self.fileFormat == "csv":
             if isinstance(data,list):
                 try:
@@ -50,6 +56,7 @@ class Saving:
             else:
                 print(CRED+"Error :: data for csv file must be a list"+CEND)
                 return False
+
         elif self.fileFormat == "txt":
             if isinstance(data,str):
                 try:
@@ -63,6 +70,7 @@ class Saving:
             else:
                 print(CRED+"Error :: data for txt file must a string"+CEND)
                 return False
+
         elif self.fileFormat == "json" or self.fileFormat == "js":
             if isinstance(data,dict):
                 try:

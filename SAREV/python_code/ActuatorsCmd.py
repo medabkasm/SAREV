@@ -64,6 +64,7 @@ def relay_command(jsonData,actuators):
         return ( False , "Error :: during executing commands :: " + str(err) )
 
     try:
+        # update actuators states file (actuators_statuses.json).
         with open("./config_files/actuators_statuses.json","w") as actStates:
             statuses = {
                 "elect_valve" : actuators["elect_valve"].value,
