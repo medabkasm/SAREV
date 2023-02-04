@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}<title>
+  {% trans "bill" %}
+</title>
+{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'manager/bil.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="receipt-content">
+<div class="container bootstrap snippets bootdey">
+<div class="row">
+<div class="col-md-12">
+<div class="invoice-wrapper">
+<div class="intro">
+<div class="row">
+  <div class="col-10">
+    Hi <strong>{{bill.user.username}}</strong>,
+    <br>
+    {% trans "This is the receipt for a payment of " %}<strong>{{bill.amount|floatformat:3}}</strong> (Da) {% trans "for your consumption" %}
+  </div>
+
+  <div class="col-2">
+    <img  class="text-right align-top" id="hat" src="{% static 'accounts/Logo_sonelgaz.png' %}" alt="" width="80" height="100" >
+
+</div>
+
+</div>
+<div class="payment-info">
+<div class="row">
+<div class="col-sm-6">
+<span>{% trans "Payment No." %}</span>
+<strong>{{bill.id}}</strong>
+</div>
+<div class="col-sm-6 text-right">
+<span>{% trans "Payment Date" %}</span>
+<strong>{{bill.date}}</strong>
+</div>
+</div>
+</div>
+
+<div class="payment-details">
+<div class="row">
+<div class="col-sm-6">
+<span>{% trans "Client" %}</span>
+<strong>
+{{bill.user.profile.firstName}} {{bill.user.profile.lastName}}
+</strong>
+<p>
+{{bill.user.profile.address}} <br>
+{{bill.user.phone}} <br>
+<a href="#">
+{{bill.user.email}}
+</a>
+</p>
+</div>
+<div class="col-sm-6 text-right">
+<span>{% trans "Payment To" %}</span>
+<strong>
+Mokhtar benounnane mohamed
+</strong>
+<p>
+ben denia fellouh <br>
+oran <br>
+10 <br>
+hassi bounif <br>
+<a href="#">
+medabkasm@gmail.com
+</a>
+</p>
+</div>
+</div>
+</div>
+
+<div class="line-items">
+<div class="headers clearfix">
+<div class="row">
+<div class="col-xs-4">{% trans "Description" %}</div>
+<div class="col-xs-3">{% trans "Quantity" %}</div>
+<div class="col-xs-5 text-right">{% trans "Amount" %}</div>
+</div>
+</div>
+<div class="items">
+  <div class="row item">
+  <div class="col-xs-4">
+  {% trans "voltage " %}
+  </div>
+  <div class="col-xs-3">
+  <strong>{{bill.voltage|floatformat:3}}</strong>
+  </div>
+  </div>
+
+
+  <div class="row item">
+  <div class="col-xs-4">
+  {% trans "average current " %}
+  </div>
+  <div class="col-xs-3">
+  <strong>{{bill.avgCurrent|floatformat:3}} A</strong>
+  </div>
+  </div>
+
+<div class="row item">
+<div class="col-xs-4 desc">
+{% trans "power " %}
+</div>
+<div class="col-xs-3 qty">
+<strong>{{bill.power|floatformat:3}}W</strong>
+</div>
+<div class="col-xs-5 amount text-right">
+</div>
+</div>
+
+
+</div>
+<div class="total text-right">
+<p class="extra-notes">
+<strong>Extra Notes</strong>
+{% trans "Please pay the bill befor 15 days after this date - " %}{{bill.date}}
+</p>
+<div class="field">
+Subtotal <span>{{bill.amount|floatformat:3}} Da</span>
+</div>
+<div class="field">
+TVA <span>0.00 Da</span>
+</div>
+<div class="field">
+Discount <span>0%</span>
+</div>
+<div class="field grand-total">
+{% trans "Total" %} <span>{{bill.amount|floatformat:3}} Da</span>
+</div>
+</div>
+<div class="print">
+							<a href='{% url "manager:check_bill" bill.id %}'>
+								<button type="button" class="btn btn-outline-primary" style="margin-top: 3em;">{% trans "Mark as Payed" %}</button>
+							</a>
+						</div>
+</div>
+</div>
+
+<div class="footer">
+Copyright © 2021. Sonelgaz
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock content %}

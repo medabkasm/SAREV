@@ -1,0 +1,59 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'accounts/login.css' %}">
+{% endblock css %}
+{% block title %}
+<title>{% trans "Sonelgaz Login" %}</title>
+{% endblock title %}
+  {% block content %}
+  <div class="container">
+  {% include "accounts/messages.html" %}
+
+  <form method="POST" class="form-signin">{% csrf_token %}
+      <div class="text-center mb-4">
+        <img class="mb-4" src="{% static 'accounts/Logo_sonelgaz.png' %}" alt="" width="72" height="72">
+        {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            {% trans "Your	username	and	password	didn't	match. Please	try	again." %}
+            {{error}}
+
+          </div>
+        {% endif %}
+
+      </div>
+
+      <div class="form-label-group">
+        <input type="text" id="inputEmail" class="form-control" placeholder="Email/phone/username" name="username" required autofocus>
+        <label for="inputEmail">{% trans "Email / phone / username" %}</label>
+      </div>
+      {% if form.errors and form.username.errors%}
+        <div class="alert alert-danger" role="alert">
+            {% for error in form.username.errors %}
+              {{error}}<br>
+            {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="form-label-group">
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+        <label for="inputPassword">{% trans "Password" %}</label>
+      </div>
+      {% if form.errors and form.password.errors%}
+        <div class="alert alert-danger" role="alert">
+            {% for error in form.password.errors %}
+              {{error}}<br>
+            {% endfor %}
+        </div>
+      {% endif %}
+
+      <button class="btn btn-lg btn-outline-warning btn-block" type="submit" value='{% trans "Login" %}' style="margin-top : 2em ;">{% trans "Sign in" %}</button>
+      <a class="btn btn-lg btn-outline-info btn-block" href="{% url "accounts:register" %}" value='{% trans "Register" %}'>{% trans "Sign up" %}</a>
+      <hr>
+      <a href="{% url "accounts:password_reset" %}">{% trans "reset password" %}</a>
+      <p class="mt-5 mb-3 text-muted text-center">&copy; 2021-2020</p>
+    </form>
+    </div>
+{% endblock content %}

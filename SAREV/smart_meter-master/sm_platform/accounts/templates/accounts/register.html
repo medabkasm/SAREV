@@ -1,0 +1,99 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}<title>
+  {% trans "Register" %}
+</title>
+{% endblock title %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'accounts/login.css' %}">
+{% endblock css %}
+
+  {% block content %}
+
+    <div class="container">
+          {% include "accounts/messages.html" %}
+
+          <form method="POST" class="form-signin">{% csrf_token %}
+              <div class="text-center mb-4">
+                <img class="mb-4" src="{% static 'accounts/Logo_sonelgaz.png' %}" alt="" width="72" height="72">
+              </div>
+                <div class="form-label-group">
+                  <input type="text"  id="inputUserName" class="form-control" placeholder='{% trans "username" %}' name="username" required autofocus>
+                  <label for="inputUserName">{% trans "username" %}</label>
+                </div>
+                {% if form.errors and form.username.errors %}
+                    <div class="alert alert-danger" role="alert">
+                    {% for error in form.username.errors %}
+                      {{error}}
+                    {% endfor %}<br>
+                  </div>
+                {% endif %}
+
+                <div class="form-label-group">
+                  <input type="email" id="inputEmail" class="form-control form-control-sm" placeholder='{% trans "Email" %}' name="email" required autofocus>
+                  <label for="inputEmail">{% trans "Email" %}</label>
+                </div>
+                {% if form.errors and form.email.errors%}
+                  <div class="alert alert-danger" role="alert">
+                        {% for error in form.email.errors %}
+                        {{error}}<br>
+                  </div>
+                          {% endfor %}
+                  {% endif %}
+                  <div class="form-label-group">
+                    <input type="number" id="inputPhone" class="form-control form-control-sm" placeholder='{% trans "phone number" %}' name="phone" required autofocus>
+                    <label for="inputPhone">{% trans "phone number" %}</label>
+                  </div>
+                  {% if form.errors and form.phone.errors%}
+                <div class="alert alert-danger" role="alert">
+                        {% for error in form.phone.errors %}
+                        {{error}}<br>
+                  </div>
+                          {% endfor %}
+                  {% endif %}
+                  <div class="form-label-group">
+                    <input type="password" id="inputPassword1" class="form-control form-control-sm" placeholder='{% trans "password" %}' name="password1" required>
+                    <label for="inputPassword1">{% trans "password" %}</label>
+                  </div>
+
+                  <div class="form-label-group">
+                    <input type="password" id="inputPassword2" class="form-control form-control-sm" placeholder='{% trans "confirm password" %}' name="password2" required>
+                    <label for="inputPassword2">{% trans "confirm password" %}</label>
+                  </div>
+                  {% if form.errors and form.password2.errors%}
+                    <div class="alert alert-danger" role="alert">
+                          {% for error in form.password2.errors %}
+                          {{error}}<br>
+                    </div>
+                            {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                        <label for="agree-term" class="label-agree-term"><span><span></span></span>
+                        <a href="#" class="term-service">  {% trans "I agree all statements in  Terms of service" %}</a></label>
+                    </div>
+                    {% if agreeError %}
+                    <div class="alert alert-danger" role="alert">
+                          {{agreeError}}<br>
+                    </div>
+                    {% endif %}
+                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                      <div class="g-recaptcha" data-sitekey="6Le9I8MaAAAAAJLCvEuD_d_s2piLnJbs9EQU5nd2"></div>
+                      {% if recaptcha %}
+                    <div class="alert alert-danger" role="alert">
+                        {{recaptcha}}<br>
+                      </div>
+                      {% endif %}
+                            <button class="btn  btn-outline-warning btn-block" type="submit" value='{% trans "Register" %}' style="margin-top : 2em ; margin-bottom: 1em; ">{% trans "Sign up" %}</button>
+                                <hr>
+                                <a  href = "{% url "accounts:login" %}" value='{% trans "Login" %}'>{% trans "already have an account" %}</a>
+
+                        </form>
+
+                    </div>
+
+
+
+{% endblock content %}

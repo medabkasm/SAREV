@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% block title %}<title>
+  {% trans "Complete profile" %}
+</title>
+{% endblock title %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'profiles/profile_complete.css' %}">
+{% endblock css %}
+{% block js %}
+<script type="text/javascript" src="{% static 'profiles/profile_complete.js' %}">
+
+</script>
+{% endblock js %}
+{% block content %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+<div class="row flex-lg-nowrap">
+
+  <div class="col">
+    <div class="row">
+      <div class="col mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="e-profile">
+              <div class="row">
+                <div class="col-12 col-sm-auto mb-3">
+                  <div class="mx-auto" style="width: 140px;">
+                    <div class="d-flex justify-content-center align-items-center rounded"  style="height: 140px; background-color: rgb(233, 236, 239);">
+                       <img src="http://placehold.it/150x150" id="imgProfile" style="width: 150px; height: 150px" class="img-thumbnail" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                  <div class="text-center text-sm-left mb-2 mb-sm-0">
+                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user.username}}</h4>
+                    <p class="mb-0">{{user.email}}</p>
+                    <div class="text-muted"><small>{{user.phone}}</small></div>
+
+                  </div>
+                  <div class="text-center text-sm-right">
+                    <span class="badge badge-secondary">{% if user.is_admin %}{% trans "Administrator" %}
+                      {% else %}
+                      {% trans "Regular user" %}
+                      {% endif %}
+                    </span>
+                    <div class="text-muted"><small>{% trans "Joined " %} {{user.joined}} </small></div>
+                  </div>
+                </div>
+
+              </div>
+              {% if profileEditForm.errors and profileEditForm.profileImage.errors %}
+                  <div class="alert alert-danger" role="alert">
+                  {% for error in profileEditForm.profileImage.errors %} ( Image field )
+                    {{error}}
+                  {% endfor %}<br>
+                </div>
+              {% endif %}
+              <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="" class="active nav-link">{% trans "Information" %}</a></li>
+              </ul>
+              <div class="tab-content pt-3">
+                <div class="tab-pane active">
+                  <form class="form" method="POST" enctype="multipart/form-data">{% csrf_token %}
+
+                    <div class="mt-2">
+                      <input type="button" class="btn btn-primary" type="button" id="btnChangePicture" value='{% trans "Change picture" %}' style="margin:1.4em;" />
+                      <input type="file" style="display: none;" id="profilePicture" name="profileImage" />
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <label>{% trans "First Name" %}</label>
+                              <input class="form-control" type="text" name="firstName" placeholder="{% trans 'firstName' %}" required>
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.firstName.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.firstName.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+
+                          </div>
+                          <div class="col">
+                            <div class="form-group">
+                              <label>{% trans "Last Name" %}</label>
+                              <input class="form-control" type="text" name="lastName" placeholder="{% trans 'lastName' %}" required>
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.lastName.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.lastName.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                              <label>{% trans "Gender" %}</label>
+                              <select name="gender" class="form-control">
+                                <option value="MALE">{% trans "Male" %}</option>
+                                <option value="FEMALE">{% trans "Female" %}</option>
+
+                              </select>
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.gender.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.gender.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+                          </div>
+
+                          <div class="col">
+                            <div class="form-group">
+                              <label>{% trans "Address" %}</label>
+                              <input name="address" class="form-control" type="text" placeholder="wilaya , address" required>
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.address.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.address.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <label>{% trans "Birthdate" %}</label>
+                                <input type="text"  class="form-control" name="birthday" placeholder="yyyy/mm/dd">
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.birthday.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.birthday.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+                          </div>
+
+                          <div class="col mb-3">
+                            <div class="form-group">
+                              <label>{% trans "Meter Number" %}</label>
+                                <input type="text"  class="form-control" name="meterNumber"  placeholder ="{{user.phone}}" disabled>
+                            </div>
+                            {% if profileEditForm.errors and profileEditForm.meterNumber.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                {% for error in profileEditForm.meterNumber.errors %}
+                                  {{error}}
+                                {% endfor %}<br>
+                              </div>
+                            {% endif %}
+                          </div>
+
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col d-flex justify-content-end">
+                        <button class="btn btn-warning" id="savingButt" type="submit" disabled>{% trans "Save Changes" %}</button>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3 mb-3">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="px-xl-3">
+              <a href="{% url 'accounts:logout' %}"><button class="btn btn-block btn-secondary">
+                <i class="fa fa-sign-out"></i>
+                <span>{% trans "Logout" %}</span>
+              </button>
+            </a>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title font-weight-bold">Support</h6>
+            <p class="card-text">Get fast, free help from our friendly assistants.</p>
+            <button type="button" class="btn btn-primary">Contact Us</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+    {% endblock content %}
