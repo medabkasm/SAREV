@@ -2,6 +2,7 @@
 #include"connection.h"
 #include"sensors.h"
 
+/*
 bool init_SAP(const char* ssid,IPAddress local_IP,IPAddress gateway,IPAddress subnet,unsigned short success,unsigned short failed){
 
  digitalWrite(success,0);
@@ -15,6 +16,7 @@ bool init_SAP(const char* ssid,IPAddress local_IP,IPAddress gateway,IPAddress su
     digitalWrite(success,0);
     delay(2000);
     Serial.println("Setting soft-AP ... ");
+
     if(WiFi.softAP(ssid,false)){
       Serial.println("Ready");
       digitalWrite(success,1);
@@ -31,6 +33,7 @@ bool init_SAP(const char* ssid,IPAddress local_IP,IPAddress gateway,IPAddress su
       return false;
     }
   }
+
   else{
     Serial.println("Failed configuring AP");
     digitalWrite(failed,1);
@@ -40,19 +43,34 @@ bool init_SAP(const char* ssid,IPAddress local_IP,IPAddress gateway,IPAddress su
 
 }
 
+*/
+
+
+// init_station function used to initialize connection of the client (ESP) with the router (modem - access point).
+/*
+  char * ssid : string with the id of the AP.
+  char * password : string with the password of the AP.
+  IPAddress staticIp : static IP address for our client given by the AP.
+  IPAddress gateway : IP address of the gateway of the AP.
+  IPAddress subnet : subnet mask for AP network.
+  unsigned short success : PIN for a GREEN LED used for connection success indication.
+  unsigned short failed : PIN for a RED LED used for connection failed indication.
+
+  returns true if the connection is established correctly , false otherwise.
+*/
 bool init_station(const char* ssid,const char* password,IPAddress staticIp,IPAddress gateway,IPAddress subnet,unsigned short success,unsigned short failed ){
   Serial.printf("Connecting to %s\n", ssid);
-  if(WiFi.config(staticIp, gateway, subnet)){
+  if(WiFi.config(staticIp, gateway, subnet)){ // wifi configuration for ESP ( client ).
     WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED){
-      digitalWrite(failed,1);
+    while (WiFi.status() != WL_CONNECTED){ // status of wifi connection.
+      digitalWrite(failed,1); // RED LED blinking waiting for connection in PIN with the variable failed.
       delay(500);
       digitalWrite(failed,0);
       delay(500);
     }
-    digitalWrite(success,1);
+    digitalWrite(success,1); // GREEN LED on , means wifi connection is established.
     Serial.print("Connected, IP address : ");
-    Serial.println(WiFi.localIP());
+    Serial.println(WiFi.localIP()); // prints local ip address for ESP given by AP.
     delay(2000);
     digitalWrite(success,0);
     return true;
@@ -61,9 +79,17 @@ bool init_station(const char* ssid,const char* password,IPAddress staticIp,IPAdd
   return false;
 }
 
+// timeout function , private use inside Connection class.
+/*
+  WiFiClient client : server object(broker).
+  unsigned long : timout value.
+
+  returns true in case of connection timeout , false otherwise.
+*/
+
 bool Connection::timeout(WiFiClient client,unsigned long maxTime){
   unsigned long startTime = millis();
-  while(!client.available()){
+  while(!client.available()){ // check server availabality ( connection ).
     if(millis() - startTime > maxTime ){
       Serial.println("connection timeout , connection with the server will be closed");
       return true ;
@@ -72,16 +98,25 @@ bool Connection::timeout(WiFiClient client,unsigned long maxTime){
   return false;
 }
 
+// init_connection function , public use inside Connection class , used to establish handshake with the server(broker).
+/*
+  WiFiClient client : server object ( broker).
+  unsigned long : timeout value in micro seconds , used inside timeout function.
+
+  returns false in case of timeout connection or flag error after closing connection with the server , true otherwise.
+
+*/
+
 bool Connection::init_connection(WiFiClient client,unsigned long maxTime){
 
   Serial.println("client connected"); // start connection with the server
-  client.print("STR");
+  client.print("STR"); // send STR flag to server in order to start connection , waiting for a returning STR flag.
 
   if(timeout(client,maxTime)){
     client.stop();
     return false;
   }
-  String response  = client.readStringUntil('\r');
+  String response  = client.readStringUntil('\r'); // start reading data from server ( handshake ).
   if(response == "STR"){
     Serial.println("start handshake...");
     client.print("EST"); // connection is established , confirmed to the server with EST (established) flag

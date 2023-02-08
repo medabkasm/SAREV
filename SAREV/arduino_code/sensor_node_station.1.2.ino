@@ -51,7 +51,7 @@ void setup(void){
     if( init_station(ssid,password,local_IP,gateway,subnet,success,failed) ){
       break;
     }
-    delay(2000); // wait for 2 seconds befor trying to reconect to the AP
+    delay(2000); // wait for 2 seconds befor trying to reconnect to the AP.
   }
   dht.begin();
   Serial.println(F("DHTxx Unified Sensor Example"));
@@ -68,7 +68,7 @@ void loop() {
 
   Serial.println("waiting for server connection...");
 
-  if(client.connect(server,PORT)){
+  if(client.connect(server,PORT)){ // start connection with the server via given AP.
     Serial.println("server is alive");
     digitalWrite(failed,1);
     Connection *node ;
